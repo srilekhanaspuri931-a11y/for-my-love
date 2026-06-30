@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -33,7 +34,7 @@
             object-fit: cover;
             border: 4px solid #ff4d6d;
             margin: 0 auto 15px auto;
-            display: block;
+            display: none; /* Controlled via script */
         }
         h1 { color: #ff4d6d; font-size: 24px; margin: 10px 0; }
         p { color: #4a4a4a; font-size: 15px; line-height: 1.6; text-align: justify; }
@@ -66,12 +67,14 @@
 </head>
 <body>
 
+    <!-- "3" Movie Beautiful Theme BGM Track -->
     <audio id="bg-music" loop>
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" type="audio/mpeg">
     </audio>
 
     <div class="card">
-        <img id="love-image" src="IMG_20260630_173822.jpg" alt="Our Love" class="profile-img" onerror="this.onerror=null; this.src='IMG_20260630_173822.JPG';">
+        <!-- Photo Scanner: Finds your uploaded picture automatically -->
+        <img id="love-image" src="" alt="Our Love" class="profile-img">
         <div class="heart">❤️</div>
         <h1>My Whole World 🌍❤️</h1>
         <p>"I don't even remember how my life was before you came into it, and I can't imagine a future without you anymore. Whether you are close to me or far away, every single beat of my heart belongs only to you. I love you sai varma!"</p>
@@ -79,6 +82,30 @@
     </div>
 
     <script>
+        // Automatic Image Finder script
+        const username = window.location.hostname.split('.')[0];
+        const repo = window.location.pathname.split('/')[1];
+        
+        fetch(`https://api.github.com/repos/${username}/${repo}/contents`)
+            .then(response => response.json())
+            .then(data => {
+                const imageFile = data.find(file => 
+                    file.name.toLowerCase().endsWith('.jpg') || 
+                    file.name.toLowerCase().endsWith('.jpeg')
+                );
+                
+                if (imageFile) {
+                    const imgElement = document.getElementById('love-image');
+                    imgElement.src = imageFile.name;
+                    imgElement.style.display = 'block';
+                }
+            })
+            .catch(() => {
+                const imgElement = document.getElementById('love-image');
+                imgElement.src = "IMG_20260630_173822.jpg";
+                imgElement.style.display = 'block';
+            });
+
         function createHeart() {
             const heart = document.createElement('div');
             heart.classList.add('falling-heart');
